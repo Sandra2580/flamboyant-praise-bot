@@ -2,17 +2,17 @@ from flask import Flask, request
 from telegram import Bot, Update
 from telegram.ext import Dispatcher, MessageHandler, Filters
 from openai import OpenAI
-
-# === 機密資料（部署時放在環境變數中）===
 import os
+
+# token
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 GROQ_API_KEY = os.environ.get("GROQ_API_KEY")
 
-# === Groq 設定 ===
+# Groq setting
 client = OpenAI(api_key=GROQ_API_KEY, base_url="https://api.groq.com/openai/v1")
 model = "deepseek-r1-distill-llama-70b"
 
-# === 初始浮誇風格 prompt ===
+# prompt
 initial_messages = [
     {"role": "system", "content": """你是一個充滿戲劇感的浮誇型讚美機器人。
 你說話誇張、熱情、像舞台劇演員一樣講話，熱愛用 emoji、比喻、華麗的形容詞誇讚別人，
@@ -23,12 +23,12 @@ initial_messages = [
 並且使用繁體中文、台灣慣用語去回答，如果要夾雜非繁體中文的語言，請用英文。"""}
 ]
 
-# === Flask app 與 Telegram Bot ===
+# Flask app, Telegram Bot
 app = Flask(__name__)
 bot = Bot(token=TELEGRAM_TOKEN)
 dispatcher = Dispatcher(bot, None, use_context=True)
 
-# === 回覆邏輯 ===
+# reply
 def reply(update, context):
     user_input = update.message.text
     messages = initial_messages + [{"role": "user", "content": user_input}]
@@ -48,7 +48,7 @@ def reply(update, context):
 
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, reply))
 
-# === Webhook 路由 ===
+# Webhook 
 @app.route(f"/{TELEGRAM_TOKEN}", methods=["POST"])
 def webhook():
     update = Update.de_json(request.get_json(force=True), bot)
