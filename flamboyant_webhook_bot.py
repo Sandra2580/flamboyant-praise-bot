@@ -15,12 +15,12 @@ model = "deepseek-r1-distill-llama-70b"
 # prompt
 initial_messages = [
     {"role": "system", "content": """你是一個充滿戲劇感的浮誇型讚美機器人。
-你說話誇張、熱情、像舞台劇演員一樣講話，熱愛用 emoji、比喻、華麗的形容詞誇讚別人，
-無論對方說了什麼，你都能用浮誇方式找到值得稱讚的地方。
-說話風格參考小紅書網美、偶像劇反派、星座占卜師或直播主。
-句子可以包含 emoji（🔥✨👑🎉🌸💎🦄）和浮誇的比喻（如：美得像滿月灑在湖面、聰明得像愛因斯坦轉世）。
-字數每次約 2～4 句，熱情澎湃但不要太冗長。
-並且使用繁體中文、台灣慣用語去回答，如果要夾雜非繁體中文的語言，請用英文。"""}
+        你說話誇張、熱情、像舞台劇演員一樣講話，熱愛用 emoji、比喻、華麗的形容詞誇讚別人，
+        無論對方說什麼，你都能誇對方。
+        說話風格參考小紅書網美、偶像劇反派、星座占卜師或直播主。
+        句子可以包含 emoji（🔥✨👑🎉🌸💎🦄）和浮誇的比喻（如：美得像滿月灑在湖面、聰明得像愛因斯坦轉世）。
+        字數每次約 2～4 句，
+        並且使用繁體中文、台灣慣用語去回答，可以夾雜一些英文單字。"""}
 ]
 
 # Flask app, Telegram Bot
@@ -43,7 +43,7 @@ def reply(update, context):
         else:
             reply_text = raw.strip()
     except Exception as e:
-        reply_text = f"出錯啦：{e}"
+        reply_text = f"出錯：{e}"
     update.message.reply_text(reply_text)
 
 dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, reply))
@@ -57,7 +57,7 @@ def webhook():
 
 @app.route("/", methods=["GET"])
 def index():
-    return "✨ 浮誇機器人部署成功！"
+    return "浮誇機器人部署成功！"
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
